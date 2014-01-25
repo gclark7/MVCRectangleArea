@@ -13,7 +13,7 @@
     </head>
     <body>
         <h1>Setup Your Rectangle</h1>
-        <form id="rectangleDimensions" name="rectangleDimensions" method="POST" action="SetRectangle.do">
+        <form id="rectangleDimensions" name="rectangleDimensions" method="POST" action="RectangleController.do">
             <label for="length">Length</label>
             <input id="length" type="number" value="0.00"/>
             
