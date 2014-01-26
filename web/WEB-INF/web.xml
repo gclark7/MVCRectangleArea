@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <servlet>
-        <servlet-name>RectangleController</servlet-name>
-        <servlet-class>edu.wctc.distjava.rectangle.controller</servlet-class>
+        <servlet-name>SetupRectangle</servlet-name>
+        <servlet-class>edu.wctc.distjava.rectangle.controller.RectangleController</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>RectangleController</servlet-name>
-        <url-pattern>/RectangleController.do</url-pattern>
+        <servlet-name>SetupRectangle</servlet-name>
+        <url-pattern>/SetupRectangle.do</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

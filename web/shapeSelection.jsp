@@ -18,13 +18,14 @@
         <select>
             
             <% 
-                String ops="<option>";
+                String ops="";
                 File f= new File("Web Pages");
                 for(File fs:f.listFiles()){
                     if(fs.getName().contains("shape_")){
-                        ops+="<a href='" + fs.getName() +"' >" + fs.getName() +"</a></option>";
+                        ops+="<option><a href='" + fs.getName() +"' >" + fs.getName() +"</a></option>";
                     }
                 }
+                out.print(ops);
             %>
             
         </select>
