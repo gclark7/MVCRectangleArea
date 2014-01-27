@@ -6,6 +6,8 @@
 
 package edu.wctc.distjava.rectangle.controller;
 
+import edu.wctc.distjava.rectangle.model.Rectangle;
+import edu.wctc.distjava.rectangle.model.Shape;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -21,6 +23,9 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "RectangleController", urlPatterns = {"/RectangleController"})
 public class RectangleController extends HttpServlet {
 
+    private Shape shape;
+    
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -32,7 +37,14 @@ public class RectangleController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        
         response.setContentType("text/html;charset=UTF-8");
+        
+         //need to add exception handling
+        Shape rectangle= new Rectangle((double)Double.parseDouble((String)request.getParameter("length")),(double)Double.parseDouble((String)request.getParameter("width")));
+        //String dimension=(String)request.getAttribute("Length");
+        
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
@@ -42,8 +54,14 @@ public class RectangleController extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet RectangleController at " + request.getContextPath() + 
-                    
                     "<br/><br/> First Servlet</h1>");
+           
+        
+       
+         out.println("<p>"+rectangle.getCalculatedMeasurments()+"</p>");
+            
+            
+        
             out.println("</body>");
             out.println("</html>");
         }
@@ -75,7 +93,10 @@ public class RectangleController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
         processRequest(request, response);
+        
+       
     }
 
     /**

@@ -14,11 +14,12 @@
     <body>
         <h1>Setup Your Rectangle</h1>
         <form id="rectangleDimensions" name="rectangleDimensions" method="POST" action="SetupRectangle.do">
+            <p>If values are unrecognized or not supplied a default Rectangle will be created</p>
             <label for="length">Length</label>
-            <input id="length" type="number" value="0.00"/>
+            <input id="length" name="length" type="number" value="0.00"/>
             
             <label for="width">Width</label>
-            <input id="width" type="number" value="0.00"/>
+            <input id="width" name="width" type="number" value="0.00"/>
             
             <input type="submit" id="btnSubmitRectangle" name="btnSubmitRectangle" value="Setup Rectangle"/>
             
