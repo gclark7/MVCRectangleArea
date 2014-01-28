@@ -115,13 +115,19 @@ public class ShapeController extends HttpServlet {
         
          
         switch(page){
+            
             case "SHAPE_SELECTION": 
                 redirectPage="setup_shape.jsp";
+                try{
                 //request.setAttribute("welcomeUser", greetingText);
                 htmlEntities=ShapeHtmlFactory.getHTML(name);
-                if(htmlEntities!=null||!htmlEntities.isEmpty()){
-                request.setAttribute("shapeSetupForm", htmlEntities);
+                }catch(Exception e){
+                    htmlEntities="Exception "+e + " in HTMLFactory<br/><a href='shapeSelection.jsp'>Try Again</a>";
                 }
+                if(htmlEntities==null||htmlEntities.isEmpty()){
+                    htmlEntities="<h1>Null Entities</h1><a href='shapeSelection.jsp'>Try Again5</a>";
+                }
+                 request.setAttribute("shapeSetupForm", htmlEntities);
                 break;
                 
             case "SHAPE_SETUP": redirectPage="shapeResults.jsp";
