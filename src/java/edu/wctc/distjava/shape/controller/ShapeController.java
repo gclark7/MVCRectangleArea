@@ -110,7 +110,7 @@ public class ShapeController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String htmlEntities="";
         page=request.getParameter("page");
-        String name="Shape_" + request.getParameter("shapeSelection");
+        String name="Shape_" + request.getParameter("shapeSelection")+".java";
         
         
          
@@ -119,7 +119,9 @@ public class ShapeController extends HttpServlet {
                 redirectPage="setup_shape.jsp";
                 //request.setAttribute("welcomeUser", greetingText);
                 htmlEntities=ShapeHtmlFactory.getHTML(name);
+                if(htmlEntities!=null||!htmlEntities.isEmpty()){
                 request.setAttribute("shapeSetupForm", htmlEntities);
+                }
                 break;
                 
             case "SHAPE_SETUP": redirectPage="shapeResults.jsp";

@@ -43,21 +43,30 @@ public class ShapeHtmlFactory {
             Properties fileProperties = new Properties();
             FileInputStream inputFile;
          
-            String SEARCH_DIR="edu.wct.distjava.shape.model";
+            //String SEARCH_DIR="MVCRectangleArea" + File.separatorChar+"Source Packages" +File.separatorChar + "edu.wctc.distjava.shape.model/";
+             String SEARCH_DIR= "src"+File.separatorChar+"java"+File.separatorChar +"edu"+File.separatorChar+
+                    "wctc"+File.separatorChar+"distjava"+
+                    File.separatorChar+"shape"+File.separatorChar+"model";
+            
+            //String SEARCH_FN="src\\java\\edu\\wctc\\distjava\\shape\\model";
             File fd=new File(SEARCH_DIR);
-            
+             
+             
             String htmlEntities="";
-            Class clzz;
             
-            Shape shape=null;
-            String className="";
-        
-                        
-                for(File f:fd.listFiles()){
-                    if(f.getName().equals(name)){
-                                               
+            if(name!=null){
+            
+                File[] f=fd.listFiles();
+                for(File s:f){
+                    //for(int i=0;i<f.length;i++){
+                    //if (f1.getName().equals(name)) {
+                    if (s.isFile()&&s.getName().equals(name)) {
                         try {
-                            inputFile = new FileInputStream("src"+File.separatorChar+"shapeConfig.properties");
+                            Class clzz;
+                            Shape shape=null;
+                            String className="";
+                            
+                            inputFile = new FileInputStream("src"+File.separatorChar+"java"+File.separatorChar+"shapeConfig.properties");
                             fileProperties.load(inputFile);
                             inputFile.close();
                             
@@ -66,9 +75,9 @@ public class ShapeHtmlFactory {
                             shape=(Shape)clzz.newInstance();
                             htmlEntities=shape.getHtmlForShapeSetup();
                         }catch(Exception e){}
-                       
-                    }//if file found
+                    } //if file found
                 }//for each file
+             }//if NOT Empty
                 
                 
                 return htmlEntities;
@@ -76,4 +85,30 @@ public class ShapeHtmlFactory {
            
          
          
+         
+         public static void main(String[] args) throws Exception{
+   
+
+             //String SEARCH_DIR= "src/java";
+            String SEARCH_DIR= "src"+File.separatorChar+"java"+File.separatorChar +"edu"+File.separatorChar+
+                    "wctc"+File.separatorChar+"distjava"+
+                    File.separatorChar+"shape"+File.separatorChar+"model";
+            
+             File fd=new File(SEARCH_DIR);
+             
+             
+            String htmlEntities="";
+            
+           
+            File[] f=fd.listFiles();
+            for(File s:f){
+                System.out.println(s.getName());
+                System.out.println(s.getName().equals("Shape_Rectangle.java"));
+            }
 }
+         
+}
+
+
+
+
