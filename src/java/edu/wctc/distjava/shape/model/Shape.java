@@ -6,8 +6,9 @@
  * Copy write: all rights reserved, may be used for educational purposes and is delivered "As is" with no guarantees for performance
  */
 
-package edu.wctc.distjava.rectangle.model;
+package edu.wctc.distjava.shape.model;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,4 +48,25 @@ public interface Shape extends Comparable{
      * @return Map String calculation name, Double value
      */
     public abstract Map<String,Double> getCalculatedMeasurments();
+    
+    /**
+     * HTML STEP 1
+     * Best served as a static method OR a Default Constructor is Mandatory
+     * 
+     * Designed to write the necessary form elements so user can provide dimensions for Shape Object
+     * 
+     *  Provides the HTML to be written so the user can provide the necessary dimensions for the Shape
+     *  Works with the readHtmlParametersFromShapeSetup() method
+     * @return 
+     */
+    public abstract String getHtmlForShapeSetup();
+    
+    /**
+     * HTML STEP 2
+     * Best served as a static method OR a Default Constructor is Mandatory
+     * 
+     * Designed to read the HTML parameters using request.getParameters("elementName") where the element names
+     * are defined in the Implementing Shape Class and provided by the getHtmlForShapeSetup() method
+     */
+    public abstract List<String> getHtmlParametersFromShapeSetup();
 }

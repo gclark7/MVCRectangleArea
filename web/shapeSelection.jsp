@@ -4,6 +4,7 @@
     Author     : gcDataTechnology
 --%>
 
+<%@page import="edu.wctc.distjava.shape.controller.ShapeController"%>
 <%@page import="javax.swing.JOptionPane"%>
 <%@page import="java.nio.file.Files"%>
 <%@page import="java.io.File"%>
@@ -17,28 +18,33 @@
     <body>
         
         <h1>Select a Shape</h1>
-        
-        <select>
+        <form id="frmShapeSelection" name="frmShapeSelection" method="POST" action="ShapeController.do">
+            <select id="shapeSelection" name="shapeSelection">
             
-            <% 
-                /*
-                String ops="";
-                out.print("BeforeFile");
-                File f= new File("Web Pages");
-                out.print(f.getPath());
-                for(File fs:f.listFiles()){
-                    out.print(fs.getName());
-                    if(fs.getName().contains("shape_")){
-                        ops+="<option><a href='" + fs.getName() +"' >" + fs.getName() +"</a></option>";
+                <% 
+                    /*
+                    String ops="";
+                    out.print("BeforeFile");
+                    File f= new File("Web Pages");
+                    out.print(f.getPath());
+                    for(File fs:f.listFiles()){
+                        out.print(fs.getName());
+                        if(fs.getName().contains("shape_")){
+                            ops+="<option><a href='" + fs.getName() +"' >" + fs.getName() +"</a></option>";
+                        }
                     }
-                }
-                out.print(ops);
-                    */
-                
-            %>
-            <option><a href="shape_rectangle.jsp">Rectangle</a></option>
-        </select>
-            <a href="shape_rectangle.jsp">Rectangle</a>
+                    out.print(ops);
+                        */
+
+                %>
+                <option id="rectangle" value="Rectangle">Rectangle</option>
+            </select>
+            <input type="text" name="page" id="page" 
+                <%
+                out.print(" value='" + ShapeController.FromPage.SHAPE_SELECTION + "' />");
+                %>
+            
+            <input type="submit" id="btnSubmit" name="btnSubmit" value="Select Shape"/>
         </form>
     </body>
 </html>

@@ -7,9 +7,12 @@
  * Copy write: all rights reserved, may be used for educational purposes and is delivered "As is" with no guarantees for performance
  */
 
-package edu.wctc.distjava.rectangle.model;
+package edu.wctc.distjava.shape.model;
 
+import edu.wctc.distjava.shape.controller.ShapeController;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -17,7 +20,7 @@ import java.util.Objects;
  *
  * @author gcDataTechnology
  */
-public class Rectangle implements Shape{
+public class Shape_Rectangle implements Shape{
 
     private final boolean hasSides=true;
     private boolean is3D=false;//might be a good candidate for the Decorator Pattern and a Wrapper Class
@@ -25,13 +28,29 @@ public class Rectangle implements Shape{
     private final double DEF_LENG=5.00;
     private final double DEF_WID=6.00;
     
+    //private final String FORM_ID="rectangleDimensions";
+    private final String FORM_ID_NAME="rectangleDimensions";
+    private final String ACTION="ShapeController.do";
+    private final String INPUT_ID_NAME_LENGTH="length";
+    private final String INPUT_ID_NAME_WIDTH="width";
+    private final String INPUT_HIDDEN_ID_NAME_PAGE="page";
+    private final Enum INPUT_HIDDEN_PAGE_VALUE=ShapeController.FromPage.SHAPE_SETUP;
+    private final String INPUT_ID_NAME_SUBMIT="btnSubmitRectangle";
+    
+    //Constructors
+    /**
+     * List this Class in the shapeConfig.properties file
+     */
+    public Shape_Rectangle(){
+        
+    }
     /**
      * Public Constructor must have a length and width
      *   Will construct a Rectangle with default values if dimension Exceptions occur
      * @param length double value 
      * @param width double value
      */
-    public Rectangle(double length, double width){
+    public Shape_Rectangle(double length, double width){
         setDimensions(length,width);
     }
     
@@ -162,7 +181,7 @@ public class Rectangle implements Shape{
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Rectangle other = (Rectangle) obj;
+        final Shape_Rectangle other = (Shape_Rectangle) obj;
         if (this.hasSides != other.hasSides) {
             return false;
         }
@@ -173,6 +192,70 @@ public class Rectangle implements Shape{
             return false;
         }
         return true;
+    }
+
+    /**
+     * MUST have the Implementing Shape Class listed in the shapeConfig.properties file
+     * HTML STEP 1
+     * @return 
+     */
+    @Override
+    public String getHtmlForShapeSetup() {
+        String htmlEntities=" <h1>Setup Your Rectangle</h1>\n" +
+"        <form id=\"rectangleDimensions\" name=\"rectangleDimensions\" method=\"POST\" action=\"ShapeController.do\">\n" +
+"            <p>If values are unrecognized or not supplied a default Rectangle will be created</p>\n" +
+"            <label for=\"length\">Length</label>\n" +
+"            <input id=\"length\" name=\"length\" type=\"number\" value=\"0.00\"/>\n" +
+"            \n" +
+"            <label for=\"width\">Width</label>\n" +
+"            <input id=\"width\" name=\"width\" type=\"number\" value=\"0.00\"/>\n" +
+"            <input type=\"hidden\" name=\"page\" id=\"page\" value=\n" +
+"                <%\n" +
+"                out.println(\"'\" + ShapeController.FromPage.SHAPE_SETUP + \"'\");\n" +
+"                %>\n" +
+"            />\n" +
+"            <input type=\"submit\" id=\"btnSubmitRectangle\" name=\"btnSubmitRectangle\" value=\"Setup Rectangle\"/>\n" +
+"            \n" +
+"        </form>";
+        
+        return htmlEntities;
+        
+    }
+
+    public static String staticGetHtmlForShapeSetup() {
+        String htmlEntities=" <h1>Setup Your Rectangle</h1>\n" +
+"        <form id=\"rectangleDimensions\" name=\"rectangleDimensions\" method=\"POST\" action=\"ShapeController.do\">\n" +
+"            <p>If values are unrecognized or not supplied a default Rectangle will be created</p>\n" +
+"            <label for=\"length\">Length</label>\n" +
+"            <input id=\"length\" name=\"length\" type=\"number\" value=\"0.00\"/>\n" +
+"            \n" +
+"            <label for=\"width\">Width</label>\n" +
+"            <input id=\"width\" name=\"width\" type=\"number\" value=\"0.00\"/>\n" +
+"            <input type=\"hidden\" name=\"page\" id=\"page\" value=\n" +
+"                <%\n" +
+"                out.println(\"'\" + ShapeController.FromPage.SHAPE_SETUP + \"'\");\n" +
+"                %>\n" +
+"            />\n" +
+"            <input type=\"submit\" id=\"btnSubmitRectangle\" name=\"btnSubmitRectangle\" value=\"Setup Rectangle\"/>\n" +
+"            \n" +
+"        </form>";
+        
+        return htmlEntities;
+        
+    }
+    
+    /**
+     * MUST have the Implementing Shape Class listed in the shapeConfig.properties file
+     * HTML STEP 2
+     */
+    @Override
+    public List<String> getHtmlParametersFromShapeSetup() {
+        List parms=new ArrayList();
+        parms.add(this.INPUT_HIDDEN_ID_NAME_PAGE);
+        parms.add(this.INPUT_ID_NAME_LENGTH);
+        parms.add(this.INPUT_ID_NAME_WIDTH);
+        
+        return parms;
     }
     
     

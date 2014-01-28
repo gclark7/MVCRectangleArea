@@ -4,27 +4,40 @@
  * and open the template in the editor.
  */
 
-package edu.wctc.distjava.rectangle.controller;
+package edu.wctc.distjava.shape.controller;
 
-import edu.wctc.distjava.rectangle.model.Rectangle;
-import edu.wctc.distjava.rectangle.model.Shape;
+import edu.wctc.distjava.shape.model.Shape_Rectangle;
+import edu.wctc.distjava.shape.model.Shape;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Properties;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import utiities.ShapeHtmlFactory;
 
 /**
  *
  * @author gcDataTechnology
  */
-@WebServlet(name = "RectangleController", urlPatterns = {"/RectangleController"})
-public class RectangleController extends HttpServlet {
-
+//@WebServlet(name = "ShapeController", urlPatterns = {"/ShapeController"})
+public class ShapeController extends HttpServlet {
+    public static enum FromPage{SHAPE_SELECTION,SHAPE_SETUP};
+    private String page="";
+    private String redirectPage="shapeSelection.jsp";
+    Class userShape=null;
     private Shape shape;
     
+    /*
+    public ShapeController(){
+        System.out.println("Instantiated ShapeController");
+    }
+    */
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,11 +51,11 @@ public class RectangleController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        
+       
         response.setContentType("text/html;charset=UTF-8");
         
          //need to add exception handling
-        Shape rectangle= new Rectangle((double)Double.parseDouble((String)request.getParameter("length")),(double)Double.parseDouble((String)request.getParameter("width")));
+        Shape rectangle= new Shape_Rectangle((double)Double.parseDouble((String)request.getParameter("length")),(double)Double.parseDouble((String)request.getParameter("width")));
         //String dimension=(String)request.getAttribute("Length");
         
         try (PrintWriter out = response.getWriter()) {
@@ -83,6 +96,7 @@ public class RectangleController extends HttpServlet {
     }
 
     /**
+     * 
      * Handles the HTTP <code>POST</code> method.
      *
      * @param request servlet request
@@ -94,9 +108,31 @@ public class RectangleController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        processRequest(request, response);
+        String htmlEntities="";
+        page=request.getParameter("page");
+        String name="Shape_" + request.getParameter("shapeSelection");
         
-       
+        
+         
+        switch(page){
+            case "SHAPE_SELECTION": 
+                redirectPage="setup_shape.jsp";
+                //request.setAttribute("welcomeUser", greetingText);
+                htmlEntities=ShapeHtmlFactory.getHTML(name);
+                request.setAttribute("shapeSetupForm", htmlEntities);
+                break;
+                
+            case "SHAPE_SETUP": redirectPage="shapeResults.jsp";
+                break;
+            default: redirectPage="shapeSelection.jsp";
+        }
+         
+        
+        //processRequest(request, response);
+        
+        
+        RequestDispatcher view = request.getRequestDispatcher(redirectPage);
+        view.forward(request, response);
     }
 
     /**
