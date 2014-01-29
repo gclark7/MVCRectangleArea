@@ -4,6 +4,9 @@
     Author     : gcDataTechnology
 --%>
 
+<%@page import="edu.wctc.distjava.shape.model.Shape"%>
+<%@page import="java.util.Map"%>
+<%@page import="utiities.ShapeHtmlFactory"%>
 <%@page import="edu.wctc.distjava.shape.controller.ShapeController"%>
 <%@page import="javax.swing.JOptionPane"%>
 <%@page import="java.nio.file.Files"%>
@@ -22,10 +25,12 @@
             <select id="shapeSelection" name="shapeSelection">
             
                 <% 
-                    /*
                     String ops="";
-                    out.print("BeforeFile");
-                    File f= new File("Web Pages");
+                    /*
+                    
+                   // out.print("BeforeFile");
+                    File f= new File("src\\java\\edu\\wctc\\distjava\\shape\\model");
+                    //File fle = new File();
                     out.print(f.getPath());
                     for(File fs:f.listFiles()){
                         out.print(fs.getName());
@@ -34,14 +39,20 @@
                         }
                     }
                     out.print(ops);
-                        */
+                    */
+                    Map<String,String> mShapes=ShapeHtmlFactory.getShapesAvailable();
+                    
+                    for(String m: mShapes.keySet()){
+                        ops+="<option value='" + m    + "' >"+mShapes.get(m)+"</option>";
+                    }
+                    out.print(ops);
 
                 %>
-                <option id="rectangle" value="Rectangle">Rectangle</option>
+                <option value="NoShape">Default</option>
             </select>
-            <input type="text" name="page" id="page" 
+            <input type="hidden" name="page" id="page" 
                 <%
-                out.print(" value='" + ShapeController.FromPage.SHAPE_SELECTION + "' />");
+                    out.print(" value='" + ShapeController.FromPage.SHAPE_SELECTION + "' />");
                 %>
             
             <input type="submit" id="btnSubmit" name="btnSubmit" value="Select Shape"/>

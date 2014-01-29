@@ -27,7 +27,10 @@ import utiities.ShapeHtmlFactory;
  */
 //@WebServlet(name = "ShapeController", urlPatterns = {"/ShapeController"})
 public class ShapeController extends HttpServlet {
-    public static enum FromPage{SHAPE_SELECTION,SHAPE_SETUP};
+    public static enum FromPage{SHAPE_SELECTION,SHAPE_SETUP};//Used on the corresponding jsp pages
+    private final String SHAPE_SELECTION="SHAPE_SELECTION";
+    private final String SHAPE_SETUP="SHAPE_SETUP";
+    
     private String page="";
     private String redirectPage="shapeSelection.jsp";
     Class userShape=null;
@@ -110,14 +113,14 @@ public class ShapeController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String htmlEntities="";
         page=request.getParameter("page");
-        String name="Shape_" + request.getParameter("shapeSelection")+".java";
+        String name= request.getParameter("shapeSelection");
         
         
          
         switch(page){
             
-            case "SHAPE_SELECTION": 
-                redirectPage="setup_shape.jsp";
+            case SHAPE_SELECTION: 
+                redirectPage="shapeSetup.jsp";
                 try{
                 //request.setAttribute("welcomeUser", greetingText);
                 htmlEntities=ShapeHtmlFactory.getHTML(name);
@@ -130,7 +133,7 @@ public class ShapeController extends HttpServlet {
                  request.setAttribute("shapeSetupForm", htmlEntities);
                 break;
                 
-            case "SHAPE_SETUP": redirectPage="shapeResults.jsp";
+            case SHAPE_SETUP: redirectPage="shapeResults.jsp";
                 break;
             default: redirectPage="shapeSelection.jsp";
         }

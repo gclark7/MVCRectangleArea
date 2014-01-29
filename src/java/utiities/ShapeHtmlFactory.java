@@ -8,10 +8,13 @@ package utiities;
 
 import FileManagerSystem.FileManager;
 import edu.wctc.distjava.shape.model.Shape;
+import edu.wctc.distjava.shape.model.Shape_Rectangle;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -20,11 +23,7 @@ import java.util.Properties;
  */
 public class ShapeHtmlFactory {
     
-    
-    
-    
-    
-    
+        
     
     
 //        try {
@@ -50,7 +49,7 @@ public class ShapeHtmlFactory {
             FileInputStream inputFile;
             FileManager fm=new FileManager();
             //File fd;
-            File[] f;
+            //File[] f;
          
             //String SEARCH_DIR="MVCRectangleArea" + File.separatorChar+"Source Packages" +File.separatorChar + "edu.wctc.distjava.shape.model/";
              String SEARCH_DIR= "src"+File.separatorChar+"java"+File.separatorChar +"edu"+File.separatorChar+
@@ -72,19 +71,21 @@ public class ShapeHtmlFactory {
                     //if (f1.getName().equals(name)) {
                     //if (s.isFile()&&s.getName().equals(name)) {
           //// if (f[i].isFile()&&f[i].getName().equals(name)) {
-                if(fm.getFile().getName().equals(name)){
+                //if(fm.getFile().getName().equals(name)){
                         try {
                             Class clzz;
                             Shape shape=null;
                             String className="";
                             
                             //inputFile = new FileInputStream("MVCRectangleArea" + File.separatorChar+"src"+File.separatorChar+"java"+File.separatorChar+"shapeConfig.properties");
-                            inputFile = new FileInputStream("src"+File.separatorChar+"shapeConfig.properties");
+                           // inputFile = new FileInputStream("src"+File.separatorChar+"shapeConfig.properties");
                             
-                            fileProperties.load(inputFile);
-                            inputFile.close();
+                            //fileProperties.load(inputFile);
+                            fileProperties.load(ShapeHtmlFactory.class.getResourceAsStream("shapeConfig.properties"));
+                            //inputFile.close();
                             
                             className=fileProperties.getProperty(name);
+                            //className=name;
                             clzz= Class.forName(className);
                             shape=(Shape)clzz.newInstance();
                             htmlEntities=shape.getHtmlForShapeSetup();
@@ -98,7 +99,7 @@ public class ShapeHtmlFactory {
                                 htmlEntities="<h1>TroubleShoot HTMLFactory</h1>";
                             }
                         }
-                    } //if file found
+                    //} //if file found
                // }//for each file
              }//if NOT Empty
                 
@@ -106,8 +107,28 @@ public class ShapeHtmlFactory {
                 return htmlEntities;
          }
            
+         /**
+          * Used to instantiate and return ALL available shapes
+          *   MUST have a default constructor
+          * 
+          * @return Map of Shape Objects
+          */
+         public static Map<String, String> getShapesAvailable(){
+             HashMap m = new HashMap();
+             //Shape r= new Shape_Rectangle();
+             String r="Rectangle";
+             m.put("Shape_Rectangle", r);
+             return m;
+         }
          
          
+         
+         
+         /*******************************************
+          * TESTING
+          * @param args
+          * @throws Exception 
+          */
          
          public static void main(String[] args) throws Exception{
    

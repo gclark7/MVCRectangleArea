@@ -16,10 +16,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+//import org.springframework.stereotype.Service;
+
 /**
  *
  * @author gcDataTechnology
  */
+//@Service
 public class Shape_Rectangle implements Shape{
 
     private final boolean hasSides=true;
@@ -214,8 +217,7 @@ public class Shape_Rectangle implements Shape{
 "                out.println(\"'\" + ShapeController.FromPage.SHAPE_SETUP + \"'\");\n" +
 "                %>\n" +
 "            />\n" +
-"            <input type=\"submit\" id=\"btnSubmitRectangle\" name=\"btnSubmitRectangle\" value=\"Setup Rectangle\"/>\n" +
-"            \n" +
+"            <input type=\"submit\" id=\"btnSubmitShape\" name=\"btnSubmitShape\" value=\"Setup Shape\"/>"+
 "        </form>";
         
         return htmlEntities;
