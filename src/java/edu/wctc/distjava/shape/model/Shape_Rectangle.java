@@ -37,7 +37,7 @@ public class Shape_Rectangle implements Shape{
     private final String INPUT_ID_NAME_LENGTH="length";
     private final String INPUT_ID_NAME_WIDTH="width";
     private final String INPUT_HIDDEN_ID_NAME_PAGE="page";
-    private final Enum INPUT_HIDDEN_PAGE_VALUE=ShapeController.FromPage.SHAPE_SETUP;
+    private final String INPUT_HIDDEN_PAGE_VALUE="SHAPE_SETUP";
     private final String INPUT_ID_NAME_SUBMIT="btnSubmitRectangle";
     
     //Constructors
@@ -212,11 +212,9 @@ public class Shape_Rectangle implements Shape{
 "            \n" +
 "            <label for=\"width\">Width</label>\n" +
 "            <input id=\"width\" name=\"width\" type=\"number\" value=\"0.00\"/>\n" +
-"            <input type=\"hidden\" name=\"page\" id=\"page\" value=\n" +
-"                <%\n" +
-"                out.println(\"'\" + ShapeController.FromPage.SHAPE_SETUP + \"'\");\n" +
-"                %>\n" +
-"            />\n" +
+"            <input type=\"text\" name=\"page\" id=\"page\" value='" +
+               INPUT_HIDDEN_PAGE_VALUE +
+              "' />" +
 "            <input type=\"submit\" id=\"btnSubmitShape\" name=\"btnSubmitShape\" value=\"Setup Shape\"/>"+
 "        </form>";
         
