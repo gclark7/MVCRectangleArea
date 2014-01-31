@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -114,8 +116,8 @@ public class ShapeController extends HttpServlet {
         String htmlEntities="";
         page=request.getParameter("page");
         String name= request.getParameter("shapeSelection");
-        
-        
+        String calcResult="";
+        String pattern="";
          
         switch(page){
             
@@ -123,17 +125,64 @@ public class ShapeController extends HttpServlet {
                 redirectPage="shapeSetup.jsp";
                 try{
                 //request.setAttribute("welcomeUser", greetingText);
-                htmlEntities=ShapeHtmlFactory.getHTML(name);
+                    shape=ShapeHtmlFactory.getShape(name);
+                    //htmlEntities=ShapeHtmlFactory.getHTML(name);
+                    htmlEntities=shape.getHtmlForShapeSetup();
+                    
                 }catch(Exception e){
-                    htmlEntities="Exception "+e + " in HTMLFactory<br/><a href='shapeSelection.jsp'>Try Again</a>";
+                    htmlEntities="Exception "+e + " in ShapeController<br/><a href='shapeSelection.jsp'>Try Again</a>";
                 }
                 if(htmlEntities==null||htmlEntities.isEmpty()){
-                    htmlEntities="<h1>Null Entities</h1><a href='shapeSelection.jsp'>Try Again5</a>";
+                    htmlEntities="<h1>Null Entities</h1><a href='shapeSelection.jsp'>Try Again</a>";
                 }
                  request.setAttribute("shapeSetupForm", htmlEntities);
+                 request.setAttribute("shapeSelection",name);
+                 //request.setAttribute("shape", shape);
+                 
                 break;
                 
             case SHAPE_SETUP: redirectPage="shapeResults.jsp";
+                //name=request.getParameter("shapeSelection");
+                //shape=(Shape)request.getAttribute("shape");
+                try{
+                    
+                    shape=ShapeHtmlFactory.getShape(name);
+                }catch(Exception e){
+                    
+                }
+                //set shape dimesions
+                HashMap<String,Double> userDim=new HashMap<>();
+                Double d=0.00;
+                for(String s:shape.getHtmlParametersFORShapeSetup()){
+                    try{
+                        String parm = (String)request.getParameter(s);
+                        if(parm!=null){
+                            d = Double.parseDouble(parm);
+                             userDim.put(s, d);
+                        }
+                        
+                    }catch(NumberFormatException n){
+                        //setup error -->wrong values, text not nums
+                        redirectPage="shapeSetup.jsp";
+                        d=0.00;
+                         userDim.put(s, d);
+                        request.setAttribute("shapeSetupForm", shape.getHtmlForShapeSetup() + shape.getShapeErrorHTML());
+                    }
+                   
+                }
+                
+                shape.setDimensions(userDim);
+                
+                //get calculated values from Shape
+                calcResult="<p><h3>Shape Calculations</h3><br/>";
+                pattern=": ";
+                Map<String,Double> m=shape.getCalculatedMeasurments();
+                    for(String s: m.keySet()){
+                        
+                        calcResult+=s+pattern + Double.toString(m.get(s)) + "<br/>";
+                    }
+                    calcResult+="</p><a href='index.html'>Do it Again</a>";
+                    request.setAttribute("calculations",calcResult );
                 break;
             default: redirectPage="shapeSelection.jsp";
         }

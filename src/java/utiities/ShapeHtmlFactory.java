@@ -23,24 +23,6 @@ import java.util.Properties;
  */
 public class ShapeHtmlFactory {
     
-        
-    
-    
-//        try {
-//            inputFile = new FileInputStream(file);
-//            fileProperties.load(inputFile);
-//            inputFile.close();
-//    
-//    ParkingFacilityStrategy p=null;
-//                String className = fileProperties.getProperty(PARKING_FACILITY+i);
-//                Class clss = Class.forName(className);
-//                p = (ParkingFacilityStrategy)clss.newInstance();
-//                
-//            }
-        
-        
-        
-         
          public static String getHTML(String name) throws IOException,
                                                      InstantiationException,
                                                      ClassNotFoundException,
@@ -116,9 +98,60 @@ public class ShapeHtmlFactory {
          public static Map<String, String> getShapesAvailable(){
              HashMap m = new HashMap();
              //Shape r= new Shape_Rectangle();
-             String r="Rectangle";
-             m.put("Shape_Rectangle", r);
+            
+             m.put("Shape_Rectangle", "Rectangle");
+             m.put("Shape_Circle", "Circle");
              return m;
+         }
+         
+         
+         /**
+          * Gets a shape from a name that matches a properties variable in the shapeConfig.properties file
+          * 
+          * @param name String properties file variable
+          * @return Shape Object
+          * @throws IOException
+          * @throws InstantiationException
+          * @throws ClassNotFoundException
+          * @throws IllegalAccessException 
+          */
+          public static Shape getShape(String name) throws IOException,
+                                                     InstantiationException,
+                                                     ClassNotFoundException,
+                                                     IllegalAccessException{
+            Properties fileProperties = new Properties();
+            Shape shape=null;
+            
+            if(name!=null){
+                        try {
+                            Class clzz;
+                            String className="";
+                            
+                            //inputFile = new FileInputStream("MVCRectangleArea" + File.separatorChar+"src"+File.separatorChar+"java"+File.separatorChar+"shapeConfig.properties");
+                           // inputFile = new FileInputStream("src"+File.separatorChar+"shapeConfig.properties");
+                            
+                            //fileProperties.load(inputFile);
+                            fileProperties.load(ShapeHtmlFactory.class.getResourceAsStream("shapeConfig.properties"));
+                            //inputFile.close();
+                            
+                            className=fileProperties.getProperty(name);
+                            //className=name;
+                            clzz= Class.forName(className);
+                            shape=(Shape)clzz.newInstance();
+                           
+                            
+                            
+                        }finally{
+                            if(shape==null){
+                                shape= new Shape_Rectangle();
+                            }
+                        }
+                    //} //if file found
+               // }//for each file
+             }//if NOT Empty
+                
+                
+                return shape;
          }
          
          

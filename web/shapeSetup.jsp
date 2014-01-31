@@ -33,6 +33,7 @@
         </form-->
         <%
             out.print(request.getAttribute("shapeSetupForm"));
+            out.print("<input type='text' id='shapeSelection' name='shapeSelection' value='"+ (String)request.getAttribute("shapeSelection") +"' />");
         %>
         
     </body>

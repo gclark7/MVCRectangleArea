@@ -13,7 +13,11 @@
     </head>
     
     <body>
-        <h1>This is your Shape</h1>
+        <h1>Your Shape</h1>
+        <%
+            out.print(request.getAttribute("calculations"));
+        
+        %>
         
     </body>
 </html>

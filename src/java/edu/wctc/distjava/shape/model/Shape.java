@@ -36,12 +36,18 @@ public interface Shape extends Comparable{
      */
     public abstract boolean hasSides();
     
+    /**
+     * Sets the dimensions Map
+     * @param dim Map String,Double key value pairs
+     */
+    public abstract void setDimensions(Map<String,Double> dim);
+            
     /***
      * Intended for the developer of the implementing Class to write private helper methods to set dimension variables
      * Generic dimensions getter method for any shape, returning a Map of key value pairs
      * @param dimensions Map of String key, Double value dimensions
      */
-    public abstract Map getDimension();
+    public abstract Map getDimensions();
     
     /**
      * Generic calculation method intended for volume, Area, Diameter and other necessary measurements that can be calculated
@@ -69,4 +75,16 @@ public interface Shape extends Comparable{
      * are defined in the Implementing Shape Class and provided by the getHtmlForShapeSetup() method
      */
     public abstract List<String> getHtmlParametersFromShapeSetup();
+    
+    /***
+     * Used to retrieve ONLY the number parameters for shape setup
+     * @return String key value constants for HTML parameters
+     */
+    public abstract List<String> getHtmlParametersFORShapeSetup();
+             
+    /**
+     * Provides the html entities to display a shape error
+     * @return 
+     */
+    public abstract String getShapeErrorHTML();
 }

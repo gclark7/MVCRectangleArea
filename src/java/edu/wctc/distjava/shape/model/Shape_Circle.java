@@ -23,33 +23,32 @@ import java.util.Objects;
  * @author gcDataTechnology
  */
 //@Service
-public class Shape_Rectangle implements Shape{
+public class Shape_Circle implements Shape{
 
-    private final boolean hasSides=true;
+    private final boolean hasSides=false;
     private boolean is3D=false;//might be a good candidate for the Decorator Pattern and a Wrapper Class
     private Map dimensions;
-    private final double DEF_LENG=5.00;
-    private final double DEF_WID=6.00;
+    private final double DEF_RADIUS=5.00;
+    //private final double DEF_SIDEB=6.00;
     
     //private final String FORM_ID="rectangleDimensions";
-    private final String FORM_ID_NAME="rectangleDimensions";
+    private final String FORM_ID_NAME="circleDimensions";
     private final String ACTION="ShapeController.do";
-    
-    private final String INPUT_ID_NAME_LENGTH="length";
-    private final String INPUT_ID_NAME_WIDTH="width";
-    
-    private final String HEIGHT="height";
+    private final String INPUT_ID_NAME_RADIUS="radius";
+    private final String DIAMETER="diameter";
+    //private final String INPUT_ID_NAME_SIDEB="sideB";
+    //private final String INPUT_ID_NAME_ANGLEA="angleA";
     private final String INPUT_HIDDEN_ID_NAME_PAGE="page";
     private final String INPUT_HIDDEN_PAGE_VALUE="SHAPE_SETUP";
-    private final String INPUT_HIDDEN_SHAPE_SELECTION="Shape_Rectangle";
-    private final String INPUT_ID_NAME_SUBMIT="btnSubmitRectangle";
+    private final String INPUT_HIDDEN_SHAPE_SELECTION="Shape_Circle";
+    private final String INPUT_ID_NAME_SUBMIT="btnSubmitCircle";
     
     //Constructors
     /**
      * List this Class in the shapeConfig.properties file for user selection to work properly
      */
-    public Shape_Rectangle(){
-        setDimensions(5.0,5.0);//default values
+    public Shape_Circle(){
+        setDimensions(DEF_RADIUS);//default values
     }
     
     
@@ -59,39 +58,29 @@ public class Shape_Rectangle implements Shape{
      * @param length double value 
      * @param width double value
      */
-    public Shape_Rectangle(double length, double width){
-        setDimensions(length,width);
+    public Shape_Circle(double radius){
+        setDimensions(radius);
     }
     
-     /**
-     * Public Constructor must have a length and width
-     *   Will construct a Rectangle with default values if dimension Exceptions occur
-     * @param length double value 
-     * @param width double value
-     */
-    public Shape_Rectangle(Map<String,Double> dim){
-        setDimensions(dim);
-    }
-    
-    private void setDimensions(double length, double width){
+    private void setDimensions(double radius){
         HashMap<String,Double> dimens = new HashMap();
-        Double dLength=null;
-        Double dWidth = null;
-        if(length>0 && width>0){
-            dLength=new Double(length);
-            dWidth = new Double(width);
+        Double dRadius=null;
+        
+        if(radius>0 ){
+            dRadius=new Double(radius);
+            
             
         }else{
-            dLength=new Double(DEF_LENG);
-            dWidth = new Double(DEF_WID);
+            dRadius=new Double(DEF_RADIUS);
+            
             
         }
-        dimens.put(INPUT_ID_NAME_LENGTH, dLength);
-        dimens.put(INPUT_ID_NAME_WIDTH, dWidth);
+        dimens.put(INPUT_ID_NAME_RADIUS, dRadius);
+        
         dimensions=dimens;
     }
     
-    /**
+     /**
      * Enables the web user to set specific values
      * @param dim Map of dimensions String key, Double values
      */
@@ -101,13 +90,14 @@ public class Shape_Rectangle implements Shape{
             if(d<0){
                 d=Math.abs((double)d);
             }else if(d==0){
-                d=DEF_LENG;
+                d=DEF_RADIUS;
             }
         }
         
         dimensions=dim;
         
     }
+    
     
     /**
      * True / false indication of a 3 Dimensional Object
@@ -127,10 +117,10 @@ public class Shape_Rectangle implements Shape{
         if(is3D){
             this.is3D=is3D;
         }else{this.is3D=false;}
-        dimensions.put(HEIGHT,height);
+        dimensions.put("height",height);
     }
     /**
-     * In this class the rectangle is defined to always have sides
+     * In this class the circle is defined to Never have sides
      * @return true
      */
     @Override
@@ -144,10 +134,13 @@ public class Shape_Rectangle implements Shape{
      */
     @Override
     public Map getDimensions() {
-        
-        return dimensions;
+        Map<String,Double> m = dimensions;
+        m.put(DIAMETER, (Double)dimensions.get(INPUT_ID_NAME_RADIUS)*2);
+        return m;
     }
 
+    
+    
     /**
      * Getter method for calculated measurements: volume, area, diameter
      * @return Map of key value measurements
@@ -156,10 +149,11 @@ public class Shape_Rectangle implements Shape{
     public Map<String, Double> getCalculatedMeasurments() {
         HashMap<String,Double> calculations = new HashMap();
         
-        Double dArea= (Double)dimensions.get(INPUT_ID_NAME_LENGTH)*(Double)dimensions.get(INPUT_ID_NAME_WIDTH);
-        calculations.put("Area", dArea);
+        Double dCirc= (Double)Math.pow((double)dimensions.get(INPUT_ID_NAME_RADIUS),2)*2*Math.PI;
+        calculations.put("Circumference", dCirc);
+        calculations.put("Area",(Double)Math.pow((double)dimensions.get(INPUT_ID_NAME_RADIUS),2)*Math.PI );
         if(is3D){
-            calculations.put("Volume", dArea*(Double)dimensions.get(HEIGHT));
+            //calculations.put("Volume", dArea*(Double)dimensions.get("Height"));
         }
         
         return calculations;
@@ -189,8 +183,10 @@ public class Shape_Rectangle implements Shape{
      */
     @Override
     public String toString() {
-        return "Rectangle{" + "hasSides=" + hasSides + ", is3D=" + is3D + ", dimensions=" + dimensions + '}';
+        return "Shape_Circle{" + "hasSides=" + hasSides + ", is3D=" + is3D + ", dimensions=" + dimensions + '}';
     }
+
+    
 
     /**
      * int value of the HashCode used for comparison purposes
@@ -218,7 +214,7 @@ public class Shape_Rectangle implements Shape{
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Shape_Rectangle other = (Shape_Rectangle) obj;
+        final Shape_Circle other = (Shape_Circle) obj;
         if (this.hasSides != other.hasSides) {
             return false;
         }
@@ -239,14 +235,12 @@ public class Shape_Rectangle implements Shape{
     @Override
     public String getHtmlForShapeSetup() {
         String htmlEntities=" <h1>Setup Your Rectangle</h1>\n" +
-"        <form id=\"rectangleDimensions\" name=\"rectangleDimensions\" method=\"POST\" action=\"ShapeController.do\">\n" +
+"        <form id='"+ FORM_ID_NAME + "' name='" +FORM_ID_NAME+"' method=\"POST\" action='" + ACTION +"'>\n" +
 "            <p>If values are unrecognized or not supplied a default Rectangle will be created</p>\n" +
-"            <label for=\"length\">Length</label>\n" +
-"            <input id=\"length\" name=\"length\" type=\"number\" value=\"0.00\"/>\n" +
+"            <label for=\"radius\">Radius</label>\n" +
+"            <input id=\"radius\" name=\"radius\" type=\"number\" value=\"0.00\"/>\n" +
 "            \n" +
-"            <label for=\"width\">Width</label>\n" +
-"            <input id=\"width\" name=\"width\" type=\"number\" value=\"0.00\"/>\n" +
-"            <input type=\"text\" name=\"page\" id=\"page\" value='" +
+"            <input type=\"text\" name='"+INPUT_HIDDEN_ID_NAME_PAGE+"' id=\"page\" value='" +
                INPUT_HIDDEN_PAGE_VALUE +"' />" + 
                 "<input type='hidden' id='shapeSelection' name='shapeSelection' value='" + INPUT_HIDDEN_SHAPE_SELECTION + "'/>"+
 "            <input type=\"submit\" id=\"btnSubmitShape\" name=\"btnSubmitShape\" value=\"Setup Shape\"/>"+
@@ -256,23 +250,19 @@ public class Shape_Rectangle implements Shape{
         
     }
 
-   
-    
     /**
-     * MUST have the Implementing Shape Class listed in the shapeConfig.properties file
-     * HTML STEP 2
+     * Used to retrieve ALL HTML parameters
      */
     @Override
     public List<String> getHtmlParametersFromShapeSetup() {
         List parms=new ArrayList();
         parms.add(this.INPUT_HIDDEN_ID_NAME_PAGE);
-        parms.add(this.INPUT_ID_NAME_LENGTH);
-        parms.add(this.INPUT_ID_NAME_WIDTH);
-        
+        parms.add(this.INPUT_ID_NAME_RADIUS);
+              
         return parms;
     }
     
-      /**
+    /**
      * Used to retrieve ONLY the number values for Shape Dimension
      * @return 
      */
@@ -280,14 +270,12 @@ public class Shape_Rectangle implements Shape{
     public List<String> getHtmlParametersFORShapeSetup() {
         List parms=new ArrayList();
        
-        parms.add(this.INPUT_ID_NAME_LENGTH);
-        parms.add(this.INPUT_ID_NAME_WIDTH);
-                    
+        parms.add(this.INPUT_ID_NAME_RADIUS);
+              
         return parms;
     }
     
-
-    /**
+     /**
      * Error message for parse String to number
      * @return String error message
      */
@@ -295,8 +283,5 @@ public class Shape_Rectangle implements Shape{
     public String getShapeErrorHTML() {
         return "<br/><p>Wrong input value - Text instead of Number</p></br>";
     }
-    
-    
-    
     
 }

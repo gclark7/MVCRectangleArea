@@ -26,20 +26,7 @@
             
                 <% 
                     String ops="";
-                    /*
-                    
-                   // out.print("BeforeFile");
-                    File f= new File("src\\java\\edu\\wctc\\distjava\\shape\\model");
-                    //File fle = new File();
-                    out.print(f.getPath());
-                    for(File fs:f.listFiles()){
-                        out.print(fs.getName());
-                        if(fs.getName().contains("shape_")){
-                            ops+="<option><a href='" + fs.getName() +"' >" + fs.getName() +"</a></option>";
-                        }
-                    }
-                    out.print(ops);
-                    */
+                  
                     Map<String,String> mShapes=ShapeHtmlFactory.getShapesAvailable();
                     
                     for(String m: mShapes.keySet()){
@@ -48,7 +35,7 @@
                     out.print(ops);
 
                 %>
-                <option value="NoShape">Default</option>
+               
             </select>
             <input type="hidden" name="page" id="page" 
                 <%
