@@ -32,6 +32,7 @@ public class Shape_Circle implements Shape{
     //private final double DEF_SIDEB=6.00;
     
     //private final String FORM_ID="rectangleDimensions";
+    private final String SHAPE_NAME="Circle";
     private final String FORM_ID_NAME="circleDimensions";
     private final String ACTION="ShapeController.do";
     private final String INPUT_ID_NAME_RADIUS="radius";
@@ -149,7 +150,7 @@ public class Shape_Circle implements Shape{
     public Map<String, Double> getCalculatedMeasurments() {
         HashMap<String,Double> calculations = new HashMap();
         
-        Double dCirc= (Double)Math.pow((double)dimensions.get(INPUT_ID_NAME_RADIUS),2)*2*Math.PI;
+        Double dCirc= (Double)(double)dimensions.get(INPUT_ID_NAME_RADIUS)*2*Math.PI;
         calculations.put("Circumference", dCirc);
         calculations.put("Area",(Double)Math.pow((double)dimensions.get(INPUT_ID_NAME_RADIUS),2)*Math.PI );
         if(is3D){
@@ -234,13 +235,13 @@ public class Shape_Circle implements Shape{
      */
     @Override
     public String getHtmlForShapeSetup() {
-        String htmlEntities=" <h1>Setup Your Rectangle</h1>\n" +
+        String htmlEntities=" <h1>Setup Your " + SHAPE_NAME+"</h1>\n" +
 "        <form id='"+ FORM_ID_NAME + "' name='" +FORM_ID_NAME+"' method=\"POST\" action='" + ACTION +"'>\n" +
-"            <p>If values are unrecognized or not supplied a default Rectangle will be created</p>\n" +
+"            <p>If values are unrecognized or not supplied a default Shape will be created</p>\n" +
 "            <label for=\"radius\">Radius</label>\n" +
 "            <input id=\"radius\" name=\"radius\" type=\"number\" value=\"0.00\"/>\n" +
 "            \n" +
-"            <input type=\"text\" name='"+INPUT_HIDDEN_ID_NAME_PAGE+"' id=\"page\" value='" +
+"            <input type=\"hidden\" name='"+INPUT_HIDDEN_ID_NAME_PAGE+"' id=\"page\" value='" +
                INPUT_HIDDEN_PAGE_VALUE +"' />" + 
                 "<input type='hidden' id='shapeSelection' name='shapeSelection' value='" + INPUT_HIDDEN_SHAPE_SELECTION + "'/>"+
 "            <input type=\"submit\" id=\"btnSubmitShape\" name=\"btnSubmitShape\" value=\"Setup Shape\"/>"+
@@ -282,6 +283,43 @@ public class Shape_Circle implements Shape{
     @Override
     public String getShapeErrorHTML() {
         return "<br/><p>Wrong input value - Text instead of Number</p></br>";
+    }
+    
+    /**
+     * Dimension test for user provided values
+     * Ensures all values are provided and of the correct data type cast
+     * @param htmlDimensionParameters Map of user Dimensions
+     * @return 
+     */
+    @Override
+    public boolean correctDimensions(Map<String,String> htmlDimensionParameters){
+        boolean correct=false;
+        boolean noErrors=true;//if 1 error then correct stays false;
+        
+        //Generic check for numbers -- All Values
+        for(String s:htmlDimensionParameters.values()){
+            if(s!=null){
+                try{
+                    Double.parseDouble(s);
+                }catch(NumberFormatException e){
+                    noErrors=false;
+                }
+            }else{
+                    noErrors=false;
+                }
+        }
+        
+        //Check needed values for calculations and dimensions
+        if(htmlDimensionParameters.get(INPUT_ID_NAME_RADIUS)==null ){
+            noErrors=false;
+        }
+        
+        //Offical ruling
+        if(noErrors){
+            correct=true;
+        }else{correct=false;}
+        
+        return correct;
     }
     
 }

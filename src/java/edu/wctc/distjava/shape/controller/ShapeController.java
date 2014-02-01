@@ -13,6 +13,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import javax.servlet.RequestDispatcher;
@@ -118,6 +120,7 @@ public class ShapeController extends HttpServlet {
         String name= request.getParameter("shapeSelection");
         String calcResult="";
         String pattern="";
+        String dimResult="";
          
         switch(page){
             
@@ -150,29 +153,53 @@ public class ShapeController extends HttpServlet {
                 }catch(Exception e){
                     
                 }
-                //set shape dimesions
+                //set shape dimesions & Check for correct values types and needed input
+                HashMap<String,String> userParameters = new HashMap<>();
                 HashMap<String,Double> userDim=new HashMap<>();
                 Double d=0.00;
-                for(String s:shape.getHtmlParametersFORShapeSetup()){
+                List htmlDimensionParameters = shape.getHtmlParametersFORShapeSetup();
+                Iterator val = htmlDimensionParameters.iterator();
+                Object p;
+                
+                //populate dimensions from user --> send for verification
+                
+                while(val.hasNext()){   
+                    p= val.next();
+                    userParameters.put((String)p, request.getParameter((String)p));
+                }
+                //rest iterator
+                val=htmlDimensionParameters.iterator();
+                    //Procede with calculations if correct
+                if(shape.correctDimensions(userParameters)){
+                    //cast Strings to Doubles
                     try{
-                        String parm = (String)request.getParameter(s);
-                        if(parm!=null){
-                            d = Double.parseDouble(parm);
-                             userDim.put(s, d);
+                        while(val.hasNext()){
+                             p= val.next();
+                            userDim.put((String)p,(Double)Double.parseDouble(userParameters.get((String)p)));
                         }
-                        
-                    }catch(NumberFormatException n){
-                        //setup error -->wrong values, text not nums
+                    }catch(NumberFormatException e){
                         redirectPage="shapeSetup.jsp";
-                        d=0.00;
-                         userDim.put(s, d);
                         request.setAttribute("shapeSetupForm", shape.getHtmlForShapeSetup() + shape.getShapeErrorHTML());
                     }
-                   
+                    //set Shape dimensions
+                    shape.setDimensions(userDim);
+                }else{
+                    //setup error -->wrong values, text not nums
+                    redirectPage="shapeSetup.jsp";
+                    request.setAttribute("shapeSetupForm", shape.getHtmlForShapeSetup() + shape.getShapeErrorHTML());
                 }
                 
-                shape.setDimensions(userDim);
-                
+                //get dimensions from Shape
+                dimResult="<p><h3>Shape Dimensions</h3><br/>";
+                pattern=": ";
+                Map<String,Double> md=shape.getDimensions();
+                    for(String s: md.keySet()){
+                        
+                        dimResult+=s+pattern + Double.toString(md.get(s)) + "<br/>";
+                    }
+                    
+                    request.setAttribute("dimensions",dimResult );
+                    
                 //get calculated values from Shape
                 calcResult="<p><h3>Shape Calculations</h3><br/>";
                 pattern=": ";
@@ -181,8 +208,11 @@ public class ShapeController extends HttpServlet {
                         
                         calcResult+=s+pattern + Double.toString(m.get(s)) + "<br/>";
                     }
-                    calcResult+="</p><a href='index.html'>Do it Again</a>";
+                    calcResult+="</p><a href='shapeSelection.jsp'>Do it Again</a>";
                     request.setAttribute("calculations",calcResult );
+                    
+                
+                    
                 break;
             default: redirectPage="shapeSelection.jsp";
         }

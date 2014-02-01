@@ -15,6 +15,7 @@
     <body>
         <h1>Your Shape</h1>
         <%
+            out.print(request.getAttribute("dimensions"));
             out.print(request.getAttribute("calculations"));
         
         %>

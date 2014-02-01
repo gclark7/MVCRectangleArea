@@ -12,6 +12,7 @@ package edu.wctc.distjava.shape.model;
 import edu.wctc.distjava.shape.controller.ShapeController;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -29,18 +30,32 @@ public class Shape_Triangle implements Shape{
     private boolean is3D=false;//might be a good candidate for the Decorator Pattern and a Wrapper Class
     private Map dimensions;
     private final double DEF_SIDEA=5.00;
-    private final double DEF_SIDEB=6.00;
+    private final double DEF_SIDEB=5.00;
+    private final double DEF_SIDEC=5.00;
+    private final double DEF_ANGLE=30;
+    private final double DEG=180;
     
+     private final String SHAPE_NAME="Triangle";
     //private final String FORM_ID="rectangleDimensions";
     private final String FORM_ID_NAME="triangleDimensions";
     private final String ACTION="ShapeController.do";
     private final String INPUT_ID_NAME_SIDEA="sideA";
     private final String INPUT_ID_NAME_SIDEB="sideB";
+    private final String INPUT_ID_NAME_SIDEC="sideC";
     private final String INPUT_ID_NAME_ANGLEA="angleA";
+    private final String INPUT_ID_NAME_ANGLEB="angleB";
+    private final String INPUT_ID_NAME_ANGLEC="angleC";
+    private String missingSide="";
+    private String missingAngle1="";
+    private String missingAngle2="";
     private final String INPUT_HIDDEN_ID_NAME_PAGE="page";
     private final String INPUT_HIDDEN_PAGE_VALUE="SHAPE_SETUP";
     private final String INPUT_HIDDEN_SHAPE_SELECTION="Shape_Triangle";
-    private final String INPUT_ID_NAME_SUBMIT="btnSubmitTriangle";
+    private final String INPUT_ID_NAME_SUBMIT="btnSubmitShape";
+    
+    private static enum UseMethod{SAS,SSA}
+    private UseMethod methodToUse;
+    private Map<String,Double> mapTemp;
     
     //Constructors
     /**
@@ -85,16 +100,14 @@ public class Shape_Triangle implements Shape{
      */
     @Override
     public void setDimensions(Map<String,Double> dim){
-        for(Double d:dim.values()){
-            if(d<0){
-                d=Math.abs((double)d);
-            }else if(d==0){
-                d=DEF_SIDEA;
-            }
+        Map<String,String> m= new HashMap<>();
+        for(String s:dim.keySet()){
+            m.put(s, dim.get(s).toString());
         }
-        
-        dimensions=dim;
-        
+        if(correctDimensions(m)){
+            dimensions=this.mapTemp;//temporary Map
+        }
+                
     }
     
     
@@ -134,12 +147,25 @@ public class Shape_Triangle implements Shape{
     @Override
     public Map getDimensions() {
         Map<String,Double> m = dimensions;
-        m.put("sideC", calculateSideC());
+        
+        if(this.methodToUse==UseMethod.SAS){
+            m.put(missingSide,(Double)calculateSide() );
+        }else {
+        
+        }
         return m;
     }
 
-    private Double calculateSideC(){
-        return Math.sqrt((Math.pow((double)dimensions.get(INPUT_ID_NAME_SIDEA),2.0) + Math.pow((double)dimensions.get(INPUT_ID_NAME_SIDEB),2.0)));
+    private Double calculateSide(){
+        Double c =new Double(0.00);
+        if(missingSide.equals(INPUT_ID_NAME_SIDEC)){
+            double p=2.0;
+            Double aSq=new Double(Math.pow(mapTemp.get(INPUT_ID_NAME_SIDEA), p));
+            Double bSq=new Double(Math.pow(mapTemp.get(INPUT_ID_NAME_SIDEB), p));
+            Double twoABcosC=new Double(p*mapTemp.get(INPUT_ID_NAME_SIDEA)*mapTemp.get(INPUT_ID_NAME_SIDEA)*Math.cos(mapTemp.get(INPUT_ID_NAME_ANGLEC)));
+            c = (Double)(Math.sqrt((double)aSq+bSq-twoABcosC));
+        }
+        return c;
      }
     
     /**
@@ -150,10 +176,9 @@ public class Shape_Triangle implements Shape{
     public Map<String, Double> getCalculatedMeasurments() {
         HashMap<String,Double> calculations = new HashMap();
         
-        Double dArea= (Double)dimensions.get("Length")*(Double)dimensions.get("Width");
-        calculations.put("Area", dArea);
+        
         if(is3D){
-            calculations.put("Volume", dArea*(Double)dimensions.get("Height"));
+           
         }
         
         return calculations;
@@ -183,7 +208,7 @@ public class Shape_Triangle implements Shape{
      */
     @Override
     public String toString() {
-        return "Rectangle{" + "hasSides=" + hasSides + ", is3D=" + is3D + ", dimensions=" + dimensions + '}';
+        return "Triangle{" + "hasSides=" + hasSides + ", is3D=" + is3D + ", dimensions=" + dimensions + '}';
     }
 
     /**
@@ -232,45 +257,34 @@ public class Shape_Triangle implements Shape{
      */
     @Override
     public String getHtmlForShapeSetup() {
-        String htmlEntities=" <h1>Setup Your Rectangle</h1>\n" +
-"        <form id=\"rectangleDimensions\" name=\"rectangleDimensions\" method=\"POST\" action=\"ShapeController.do\">\n" +
-"            <p>If values are unrecognized or not supplied a default Rectangle will be created</p>\n" +
-"            <label for=\"length\">Length</label>\n" +
-"            <input id=\"length\" name=\"length\" type=\"number\" value=\"0.00\"/>\n" +
-"            \n" +
-"            <label for=\"width\">Width</label>\n" +
-"            <input id=\"width\" name=\"width\" type=\"number\" value=\"0.00\"/>\n" +
-"            <input type=\"text\" name=\"page\" id=\"page\" value='" +
-               INPUT_HIDDEN_PAGE_VALUE +"' />" + 
+        String htmlEntities=" <h1>Setup Your " + SHAPE_NAME +"</h1>\n" +
+"        <form id='"+FORM_ID_NAME + "' name='"+FORM_ID_NAME+"' method=\"POST\" action='"+
+                ACTION + "'>\n" +
+"            <p>If values are unrecognized or not supplied a default Shape will be created</p>\n" +
+"            <label for='"+ INPUT_ID_NAME_SIDEA + "'>"+INPUT_ID_NAME_SIDEA+"</label> &nbsp;" +
+"            <input id='"+ INPUT_ID_NAME_SIDEA + "' name='"+ INPUT_ID_NAME_SIDEA + "' type=\"number\" value=\"0.00\" />\n" +
+"            <label for='"+ INPUT_ID_NAME_SIDEB + "'>"+ INPUT_ID_NAME_SIDEB + "</label> &nbsp;" +
+"            <input id='"+ INPUT_ID_NAME_SIDEB + "' name='"+ INPUT_ID_NAME_SIDEB + "' type=\"number\" value=\"0.00\"/>\n" +
+             "<label for='"+ INPUT_ID_NAME_SIDEC + "'>"+ INPUT_ID_NAME_SIDEC + "</label> &nbsp;" +
+"            <input id='"+ INPUT_ID_NAME_SIDEC + "' name='"+ INPUT_ID_NAME_SIDEC + "' type=\"number\" value=\"0.00\"/>\n" + 
+                
+             "<label for='"+ INPUT_ID_NAME_ANGLEA + "'>"+ INPUT_ID_NAME_ANGLEA + "</label> &nbsp;" +
+"            <input id='"+ INPUT_ID_NAME_ANGLEA + "' name='"+ INPUT_ID_NAME_ANGLEA + "' type=\"number\" value='"+DEF_ANGLE + "'/>\n" +
+             "<label for='"+ INPUT_ID_NAME_ANGLEB + "'>"+ INPUT_ID_NAME_ANGLEB + "</label> &nbsp;" +
+"            <input id='"+ INPUT_ID_NAME_ANGLEB + "' name='"+ INPUT_ID_NAME_ANGLEB + "' type=\"number\" value=\"0.00\"/>\n" +
+             "<label for='"+ INPUT_ID_NAME_ANGLEC + "'>"+ INPUT_ID_NAME_ANGLEC + "</label> &nbsp;" +
+"            <input id='"+ INPUT_ID_NAME_ANGLEC + "' name='"+ INPUT_ID_NAME_ANGLEC + "' type=\"number\"  value=\"0.00\"/>\n" +
+                
+"            <input type=\"hidden\" name='"+INPUT_HIDDEN_ID_NAME_PAGE+"' id='" + INPUT_HIDDEN_ID_NAME_PAGE + "' value='" +
+               INPUT_HIDDEN_PAGE_VALUE + "' />" + 
                 "<input type='hidden' id='shapeSelection' name='shapeSelection' value='" + INPUT_HIDDEN_SHAPE_SELECTION + "'/>"+
-"            <input type=\"submit\" id=\"btnSubmitShape\" name=\"btnSubmitShape\" value=\"Setup Shape\"/>"+
+"            <input type=\"submit\" id='"+INPUT_ID_NAME_SUBMIT+"' name='"+INPUT_ID_NAME_SUBMIT+"' value='Setup Shape'/>"+
 "        </form>";
         
         return htmlEntities;
         
     }
 
-    public static String staticGetHtmlForShapeSetup() {
-        String htmlEntities=" <h1>Setup Your Rectangle</h1>\n" +
-"        <form id=\"rectangleDimensions\" name=\"rectangleDimensions\" method=\"POST\" action=\"ShapeController.do\">\n" +
-"            <p>If values are unrecognized or not supplied a default Rectangle will be created</p>\n" +
-"            <label for=\"length\">Length</label>\n" +
-"            <input id=\"length\" name=\"length\" type=\"number\" value=\"0.00\"/>\n" +
-"            \n" +
-"            <label for=\"width\">Width</label>\n" +
-"            <input id=\"width\" name=\"width\" type=\"number\" value=\"0.00\"/>\n" +
-"            <input type=\"hidden\" name=\"page\" id=\"page\" value=\n" +
-"                <%\n" +
-"                out.println(\"'\" + ShapeController.FromPage.SHAPE_SETUP + \"'\");\n" +
-"                %>\n" +
-"            />\n" +
-"            <input type=\"submit\" id=\"btnSubmitRectangle\" name=\"btnSubmitRectangle\" value=\"Setup Rectangle\"/>\n" +
-"            \n" +
-"        </form>";
-        
-        return htmlEntities;
-        
-    }
     
     /**
      * MUST have the Implementing Shape Class listed in the shapeConfig.properties file
@@ -279,10 +293,15 @@ public class Shape_Triangle implements Shape{
     @Override
     public List<String> getHtmlParametersFromShapeSetup() {
         List parms=new ArrayList();
-        parms.add(this.INPUT_HIDDEN_ID_NAME_PAGE);
-        parms.add(this.INPUT_ID_NAME_SIDEA);
-        parms.add(this.INPUT_ID_NAME_SIDEB);
-        parms.add(this.INPUT_ID_NAME_ANGLEA);
+        parms.add(INPUT_ID_NAME_SIDEA);
+        parms.add(INPUT_ID_NAME_SIDEB);
+        parms.add(INPUT_ID_NAME_SIDEC);
+        parms.add(INPUT_ID_NAME_ANGLEA);
+        parms.add(INPUT_ID_NAME_ANGLEB);
+        parms.add(INPUT_ID_NAME_ANGLEC);
+    
+        parms.add(INPUT_HIDDEN_ID_NAME_PAGE);
+        parms.add(INPUT_HIDDEN_PAGE_VALUE);
         
         return parms;
     }
@@ -293,7 +312,8 @@ public class Shape_Triangle implements Shape{
      */
     @Override
     public String getShapeErrorHTML() {
-        return "<br/><p>Wrong input value - Text instead of Number</p></br>";
+        return "<br/><p>Wrong input value - Text instead of Number<br/>"+
+                "Be sure Unused values are set to Zero</p></br>";
     }
     
      /**
@@ -303,12 +323,73 @@ public class Shape_Triangle implements Shape{
      @Override
     public List<String> getHtmlParametersFORShapeSetup() {
         List parms=new ArrayList();
-       
-        parms.add(this.INPUT_ID_NAME_SIDEA);
-        parms.add(this.INPUT_ID_NAME_SIDEB);
-        parms.add(this.INPUT_ID_NAME_ANGLEA);
+        parms.add(INPUT_ID_NAME_SIDEA);
+        parms.add(INPUT_ID_NAME_SIDEB);
+        parms.add(INPUT_ID_NAME_SIDEC);
+        parms.add(INPUT_ID_NAME_ANGLEA);
+        parms.add(INPUT_ID_NAME_ANGLEB);
+        parms.add(INPUT_ID_NAME_ANGLEC);
               
         return parms;
     }
+    
+    /**
+     * Dimension test for user provided values
+     * Ensures all values are provided and of the correct data type cast
+     * @param htmlDimensionParameters Map of user Dimensions
+     * @return 
+     */
+    @Override
+    public boolean correctDimensions(Map<String,String> htmlDimensionParameters){
+        boolean correct=false;
+        boolean noErrors=false;//if 1 error then correct stays false;
+        this.mapTemp= new LinkedHashMap();       
+        //Check needed values for calculations and dimensions
+        //First Check is for any combination of Side-Angle-Side (SAS)
+        
+        //Sa,Sb,Ac
+        if((htmlDimensionParameters.get(INPUT_ID_NAME_SIDEA)!=null && Double.parseDouble(htmlDimensionParameters.get(INPUT_ID_NAME_SIDEA))!=0) &&
+           (htmlDimensionParameters.get(INPUT_ID_NAME_SIDEB)!=null && Double.parseDouble(htmlDimensionParameters.get(INPUT_ID_NAME_SIDEB))!=0) &&
+           (htmlDimensionParameters.get(INPUT_ID_NAME_ANGLEC)!=null && Double.parseDouble(htmlDimensionParameters.get(INPUT_ID_NAME_ANGLEC))!=0)){
+                noErrors=true;
+                this.methodToUse=UseMethod.SAS;
+                
+                mapTemp.put(INPUT_ID_NAME_SIDEA, (Double)Double.parseDouble(htmlDimensionParameters.get(INPUT_ID_NAME_SIDEA)));
+                mapTemp.put(INPUT_ID_NAME_SIDEB, (Double)Double.parseDouble(htmlDimensionParameters.get(INPUT_ID_NAME_SIDEB)));
+                mapTemp.put(INPUT_ID_NAME_ANGLEC, (Double)Double.parseDouble(htmlDimensionParameters.get(INPUT_ID_NAME_ANGLEC)));
+                mapTemp.put(INPUT_ID_NAME_SIDEC, new Double(0.00));
+                missingSide=INPUT_ID_NAME_SIDEC;
+                
+        }else if((htmlDimensionParameters.get(INPUT_ID_NAME_SIDEA)!=null && Double.parseDouble(htmlDimensionParameters.get(INPUT_ID_NAME_SIDEA))!=0) &&
+           (htmlDimensionParameters.get(INPUT_ID_NAME_SIDEC)!=null && Double.parseDouble(htmlDimensionParameters.get(INPUT_ID_NAME_SIDEC))!=0) &&
+           (htmlDimensionParameters.get(INPUT_ID_NAME_ANGLEB)!=null && Double.parseDouble(htmlDimensionParameters.get(INPUT_ID_NAME_ANGLEB))!=0)){
+                noErrors=true;
+                this.methodToUse=UseMethod.SAS;
+                
+                mapTemp.put(INPUT_ID_NAME_SIDEA, (Double)Math.abs(Double.parseDouble(htmlDimensionParameters.get(INPUT_ID_NAME_SIDEA))));
+                mapTemp.put(INPUT_ID_NAME_SIDEC, (Double)Math.abs(Double.parseDouble(htmlDimensionParameters.get(INPUT_ID_NAME_SIDEC))));
+                mapTemp.put(INPUT_ID_NAME_ANGLEB, (Double)Math.abs(Double.parseDouble(htmlDimensionParameters.get(INPUT_ID_NAME_ANGLEB))));
+                mapTemp.put(INPUT_ID_NAME_SIDEB, new Double(0.00));
+                missingSide=INPUT_ID_NAME_SIDEB;
+                
+        }else if((htmlDimensionParameters.get(INPUT_ID_NAME_SIDEB)!=null && Double.parseDouble(htmlDimensionParameters.get(INPUT_ID_NAME_SIDEB))!=0) &&
+           (htmlDimensionParameters.get(INPUT_ID_NAME_SIDEC)!=null && Double.parseDouble(htmlDimensionParameters.get(INPUT_ID_NAME_SIDEC))!=0) &&
+           (htmlDimensionParameters.get(INPUT_ID_NAME_ANGLEA)!=null && Double.parseDouble(htmlDimensionParameters.get(INPUT_ID_NAME_ANGLEA))!=0)){
+                noErrors=true;
+                this.methodToUse=UseMethod.SAS;
+               
+                mapTemp.put(INPUT_ID_NAME_SIDEB, (Double)Math.abs(Double.parseDouble(htmlDimensionParameters.get(INPUT_ID_NAME_SIDEB))));
+                mapTemp.put(INPUT_ID_NAME_SIDEC, (Double)Math.abs(Double.parseDouble(htmlDimensionParameters.get(INPUT_ID_NAME_SIDEC))));
+                mapTemp.put(INPUT_ID_NAME_ANGLEA, (Double)Math.abs(Double.parseDouble(htmlDimensionParameters.get(INPUT_ID_NAME_ANGLEA))));
+                mapTemp.put(INPUT_ID_NAME_SIDEA, new Double(0.00));
+                missingSide=INPUT_ID_NAME_SIDEA;
+        }
+        
+        //Offical ruling
+        correct=noErrors;
+        
+        return correct;
+    }
+    
     
 }

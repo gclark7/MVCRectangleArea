@@ -30,7 +30,7 @@ public class Shape_Rectangle implements Shape{
     private Map dimensions;
     private final double DEF_LENG=5.00;
     private final double DEF_WID=6.00;
-    
+     private final String SHAPE_NAME="Rectangle";
     //private final String FORM_ID="rectangleDimensions";
     private final String FORM_ID_NAME="rectangleDimensions";
     private final String ACTION="ShapeController.do";
@@ -238,15 +238,15 @@ public class Shape_Rectangle implements Shape{
      */
     @Override
     public String getHtmlForShapeSetup() {
-        String htmlEntities=" <h1>Setup Your Rectangle</h1>\n" +
+        String htmlEntities=" <h1>Setup Your " +SHAPE_NAME + "</h1>\n" +
 "        <form id=\"rectangleDimensions\" name=\"rectangleDimensions\" method=\"POST\" action=\"ShapeController.do\">\n" +
-"            <p>If values are unrecognized or not supplied a default Rectangle will be created</p>\n" +
+"            <p>If values are unrecognized or not supplied a default Shape will be created</p>\n" +
 "            <label for=\"length\">Length</label>\n" +
 "            <input id=\"length\" name=\"length\" type=\"number\" value=\"0.00\"/>\n" +
 "            \n" +
 "            <label for=\"width\">Width</label>\n" +
 "            <input id=\"width\" name=\"width\" type=\"number\" value=\"0.00\"/>\n" +
-"            <input type=\"text\" name=\"page\" id=\"page\" value='" +
+"            <input type=\"hidden\" name=\"page\" id=\"page\" value='" +
                INPUT_HIDDEN_PAGE_VALUE +"' />" + 
                 "<input type='hidden' id='shapeSelection' name='shapeSelection' value='" + INPUT_HIDDEN_SHAPE_SELECTION + "'/>"+
 "            <input type=\"submit\" id=\"btnSubmitShape\" name=\"btnSubmitShape\" value=\"Setup Shape\"/>"+
@@ -296,7 +296,42 @@ public class Shape_Rectangle implements Shape{
         return "<br/><p>Wrong input value - Text instead of Number</p></br>";
     }
     
-    
+    /**
+     * Dimension test for user provided values
+     * Ensures all values are provided and of the correct data type cast
+     * @param htmlDimensionParameters Map of user Dimensions
+     * @return 
+     */
+    @Override
+    public boolean correctDimensions(Map<String,String> htmlDimensionParameters){
+        boolean correct=false;
+        boolean noErrors=true;//if 1 error then correct stays false;
+        
+        //Generic check for numbers -- All Values
+        for(String s:htmlDimensionParameters.values()){
+            if(s!=null){
+                try{
+                    Double.parseDouble(s);
+                }catch(NumberFormatException e){
+                    noErrors=false;
+                }
+            }else{
+                    noErrors=false;
+                }
+        }
+        
+        //Check needed values for calculations and dimensions
+        if(htmlDimensionParameters.get(INPUT_ID_NAME_LENGTH)==null ||
+           htmlDimensionParameters.get(INPUT_ID_NAME_WIDTH)==null){
+            noErrors=false;
+        }
+        
+        //Offical ruling
+        if(noErrors){
+            correct=true;
+        }else{correct=false;}
+        return correct;
+    }
     
     
 }

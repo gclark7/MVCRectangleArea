@@ -101,6 +101,7 @@ public class ShapeHtmlFactory {
             
              m.put("Shape_Rectangle", "Rectangle");
              m.put("Shape_Circle", "Circle");
+             m.put("Shape_Triangle", "Triangle");
              return m;
          }
          

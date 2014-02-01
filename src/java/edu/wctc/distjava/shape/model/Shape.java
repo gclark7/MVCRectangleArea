@@ -57,7 +57,6 @@ public interface Shape extends Comparable{
     
     /**
      * HTML STEP 1
-     * Best served as a static method OR a Default Constructor is Mandatory
      * 
      * Designed to write the necessary form elements so user can provide dimensions for Shape Object
      * 
@@ -69,7 +68,6 @@ public interface Shape extends Comparable{
     
     /**
      * HTML STEP 2
-     * Best served as a static method OR a Default Constructor is Mandatory
      * 
      * Designed to read the HTML parameters using request.getParameters("elementName") where the element names
      * are defined in the Implementing Shape Class and provided by the getHtmlForShapeSetup() method
@@ -87,4 +85,11 @@ public interface Shape extends Comparable{
      * @return 
      */
     public abstract String getShapeErrorHTML();
+    
+    /**
+     * Intended to check user values to ensure dimension are correct and calculations can be performed
+     * @param htmlDimensionParameters Map of request.getParameters() from user setup form
+     * @return 
+     */
+    public abstract boolean correctDimensions(Map<String,String> htmlDimensionParameters);
 }
