@@ -92,4 +92,5 @@ public interface Shape extends Comparable{
      * @return 
      */
     public abstract boolean correctDimensions(Map<String,String> htmlDimensionParameters);
+    
 }
