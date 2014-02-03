@@ -3,6 +3,10 @@
     <servlet>
         <servlet-name>ShapeController</servlet-name>
         <servlet-class>edu.wctc.distjava.shape.controller.ShapeController</servlet-class>
+        <init-param>
+            <param-name>adminMail</param-name>
+            <param-value>gclark7@my.wctc.edu</param-value>
+        </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
@@ -17,4 +21,6 @@
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
+    
+    
 </web-app>

@@ -16,7 +16,11 @@
         <%
             out.print(request.getAttribute("shapeSetupForm"));
             out.print("<input type='hidden' id='shapeSelection' name='shapeSelection' value='"+ (String)request.getAttribute("shapeSelection") +"' />");
+            
         %>
-        
+        <a id="navBack" name="navBack" href=${fromPage}>Back</a>
+        <input id="back" name="back" type="hidden" value=${fromPage}/>
+        <footer><a href="mailto:${emailValue}" target="_blank"> ${emailValue} </a>
+        </footer>  
     </body>
 </html>

@@ -60,31 +60,12 @@ public class ShapeController extends HttpServlet {
         
        
         response.setContentType("text/html;charset=UTF-8");
+        redirectPage=request.getParameter("back");
+        //request.setAttribute(fromPage, redirectPage);
+        RequestDispatcher view = request.getRequestDispatcher(redirectPage);
+        view.forward(request, response);
         
-         //need to add exception handling
-        Shape rectangle= new Shape_Rectangle((double)Double.parseDouble((String)request.getParameter("length")),(double)Double.parseDouble((String)request.getParameter("width")));
-        //String dimension=(String)request.getAttribute("Length");
         
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ShapeController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet RectangleController at " + request.getContextPath() + 
-                    "<br/><br/> First Servlet</h1>");
-           
-        
-       
-         out.println("<p>"+rectangle.getCalculatedMeasurments()+"</p>");
-            
-            
-        
-            out.println("</body>");
-            out.println("</html>");
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -99,7 +80,7 @@ public class ShapeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        //processRequest(request, response);
     }
 
     /**
@@ -121,11 +102,17 @@ public class ShapeController extends HttpServlet {
         String calcResult="";
         String pattern="";
         String dimResult="";
-         
+        String fromPage="";
+        
+        String emailValue=getServletConfig().getInitParameter("adminMail");
+        request.setAttribute("emailValue", emailValue);
+        
         switch(page){
             
             case SHAPE_SELECTION: 
                 redirectPage="shapeSetup.jsp";
+                fromPage="shapeSelection.jsp";
+                
                 try{
                 //request.setAttribute("welcomeUser", greetingText);
                     shape=ShapeHtmlFactory.getShape(name);
@@ -133,10 +120,12 @@ public class ShapeController extends HttpServlet {
                     htmlEntities=shape.getHtmlForShapeSetup();
                     
                 }catch(Exception e){
-                    htmlEntities="Exception "+e + " in ShapeController<br/><a href='shapeSelection.jsp'>Try Again</a>";
+                    htmlEntities="Exception "+e + " in ShapeController<br/><a href='shapeSelection.jsp'>Try Again</a>"+
+                            "<footer>" + getServletConfig().getInitParameter("adminMail")+"</footer>";
                 }
                 if(htmlEntities==null||htmlEntities.isEmpty()){
-                    htmlEntities="<h1>Null Entities</h1><a href='shapeSelection.jsp'>Try Again</a>";
+                    htmlEntities="<h1>Null Entities</h1><a href='shapeSelection.jsp'>Try Again</a>"+
+                            "<footer>" + getServletConfig().getInitParameter("adminMail")+"</footer>";
                 }
                  request.setAttribute("shapeSetupForm", htmlEntities);
                  request.setAttribute("shapeSelection",name);
@@ -145,8 +134,10 @@ public class ShapeController extends HttpServlet {
                 break;
                 
             case SHAPE_SETUP: redirectPage="shapeResults.jsp";
+                fromPage="shapeSetup.jsp";
                 //name=request.getParameter("shapeSelection");
                 //shape=(Shape)request.getAttribute("shape");
+                 
                 try{
                     
                     shape=ShapeHtmlFactory.getShape(name);
@@ -179,6 +170,7 @@ public class ShapeController extends HttpServlet {
                         }
                     }catch(NumberFormatException e){
                         redirectPage="shapeSetup.jsp";
+                        fromPage="shapeSelection.jsp";
                         request.setAttribute("shapeSetupForm", shape.getHtmlForShapeSetup() + shape.getShapeErrorHTML());
                     }
                     //set Shape dimensions
@@ -186,6 +178,7 @@ public class ShapeController extends HttpServlet {
                 }else{
                     //setup error -->wrong values, text not nums
                     redirectPage="shapeSetup.jsp";
+                    fromPage="shapeSelection.jsp";
                     request.setAttribute("shapeSetupForm", shape.getHtmlForShapeSetup() + shape.getShapeErrorHTML());
                 }
                 
@@ -211,16 +204,16 @@ public class ShapeController extends HttpServlet {
                     calcResult+="</p><a href='shapeSelection.jsp'>Do it Again</a>";
                     request.setAttribute("calculations",calcResult );
                     
-                
-                    
                 break;
+                
             default: redirectPage="shapeSelection.jsp";
+                fromPage="index.html";
         }
          
         
         //processRequest(request, response);
         
-        
+        request.setAttribute("fromPage", fromPage);
         RequestDispatcher view = request.getRequestDispatcher(redirectPage);
         view.forward(request, response);
     }

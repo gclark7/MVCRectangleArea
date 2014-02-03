@@ -19,6 +19,6 @@
             out.print(request.getAttribute("calculations"));
         
         %>
-        
+        <footer><%out.print(request.getAttribute("emailValue"));%></footer>  
     </body>
 </html>
